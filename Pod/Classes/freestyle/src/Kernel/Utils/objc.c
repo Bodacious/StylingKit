@@ -32,7 +32,7 @@ SEL preprocessSEL(SEL _cmd)
 	const char* name = sel_getName(_cmd);
 	static const char rac_prefix[] = "rac_alias_";
 	static const size_t rac_prefix_length = 10;
-	
+
 	if (strncmp(name, rac_prefix, rac_prefix_length) == 0)
 	{
 		name += rac_prefix_length;
@@ -41,21 +41,23 @@ SEL preprocessSEL(SEL _cmd)
 	return _cmd;
 }
 
-
 void* callSuper0(id self, Class superClass, SEL _cmd)
 {
-	struct objc_super super;
-	super.receiver = (__bridge void *)self;
-	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-	return objc_msgSendSuper(&super, preprocessSEL(_cmd));
+    struct objc_super super;
+    super.receiver = (__bridge void *)self;
+    super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
+
+    void* (*objc_msgSendSuperTyped)(id self, SEL _cmd) = (void*)objc_msgSendSuper;
+    return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd));
 }
+
 
 void* callSuper1(id self, Class superClass, SEL _cmd, id arg1)
 {
 	struct objc_super super;
 	super.receiver = (__bridge void *) self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, void *arg1) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1);
@@ -66,7 +68,7 @@ void* callSuper1b(id self, Class superClass, SEL _cmd, BOOL arg1)
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, BOOL arg1) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1);
@@ -78,7 +80,7 @@ void* callSuper1v(id self, Class superClass, SEL _cmd, void *arg1)
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, void *arg1) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1);
@@ -89,7 +91,7 @@ void* callSuper2(id self, Class superClass, SEL _cmd, id arg1, id arg2)
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, id arg1, void * arg2) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1, arg2);
@@ -100,7 +102,7 @@ void* callSuper2v(id self, Class superClass, SEL _cmd, id arg1, void *arg2)
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, void *arg1, void *arg2) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1, arg2);
@@ -110,7 +112,7 @@ void* callSuper2v(id self, Class superClass, SEL _cmd, id arg1, void *arg2)
 void* callSuper2vv(id self, Class superClass, SEL _cmd, void *arg1, void *arg2)
 {
     CGFloat *arg1_ref = arg1;
-    
+
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
@@ -126,7 +128,7 @@ void* callSuper3v(id self, Class superClass, SEL _cmd, id arg1, void *arg2, void
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, void *arg1, void *arg2, void *arg3) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1, arg2, arg3);
@@ -137,7 +139,7 @@ void* callSuper4v(id self, Class superClass, SEL _cmd, id arg1, void *arg2, void
 	struct objc_super super;
 	super.receiver = (__bridge void *)self;
 	super.class = superClass != NULL ? superClass : class_getSuperclass(object_getClass(self));
-    
+
     void* (*objc_msgSendSuperTyped)(id self, SEL _cmd, void *arg1, void *arg2, void *arg3, void *arg4) = (void*)objc_msgSendSuper;
 
 	return objc_msgSendSuperTyped((id) &super, preprocessSEL(_cmd), arg1, arg2, arg3, arg4);
@@ -148,4 +150,3 @@ void copyIndexedIvars(id src, id dest, size_t size)
 {
     memmove((__bridge void *)object_getIndexedIvars(dest), (__bridge void *)object_getIndexedIvars(src), size);
 }
-
